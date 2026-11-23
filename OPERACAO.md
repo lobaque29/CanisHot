@@ -51,3 +51,26 @@ identificar e cancelar cada teste. Não informe dados reais de terceiros.
 O subtotal exibido é apenas uma estimativa dos preços conhecidos; adicionais,
 itens sem preço e entrega não são calculados. O atendimento da loja é
 responsável pela conferência e pela confirmação final.
+
+## Segurança e responsabilidade da operação
+
+- Ative autenticação em dois fatores nas contas com acesso ao repositório e
+  revise colaboradores, aplicativos autorizados e chaves de acesso. Não guarde
+  senhas ou tokens no código: todo o conteúdo publicado é público.
+- Proteja a branch publicada com revisão de alterações e acesso restrito.
+  Confira especialmente alterações nos números de WhatsApp, links, scripts e
+  cardápios antes de publicar; qualquer pessoa com acesso de escrita pode
+  alterar o site.
+- A política de segurança do navegador limita scripts a arquivos do próprio
+  site, mas é aplicada por meta tag. No GitHub Pages não há configuração de
+  cabeçalhos HTTP personalizada neste projeto: por isso ela não impede que o
+  site seja incorporado em um iframe nem substitui proteções do servidor.
+  Se esse bloqueio for necessário, use uma hospedagem ou proxy confiável que
+  aplique `Content-Security-Policy: frame-ancestors 'none'` como cabeçalho HTTP.
+- O site não tem servidor de pedidos, autenticação ou proteção própria contra
+  abuso no WhatsApp. Os clientes devem conferir o destinatário e a loja deve
+  validar cada mensagem antes de aceitar o pedido ou solicitar pagamento.
+- Nome, endereço e observações são incluídos na mensagem do WhatsApp quando o
+  cliente escolhe continuar; informe os clientes sobre esse compartilhamento e
+  mantenha apenas os dados necessários. O site não deve coletar informações
+  de cartão, senhas ou dados sensíveis nas observações.
