@@ -32,11 +32,12 @@ disponibilidade com as lojas.
 Combine previamente com as duas lojas os produtos, valor máximo e a forma de
 identificar e cancelar cada teste. Não informe dados reais de terceiros.
 
-1. Na Canis Hot, escolha um produto que exige opção e outro simples. Informe
-   as opções no campo apropriado, quantidades, nome e entrega ou retirada.
+1. Na Canis Hot, escolha um produto que exige opção e outro simples. Abra o
+   carrinho e informe opções, quantidades, nome, entrega ou retirada e
+   preferência de pagamento. Se optar por dinheiro, teste o troco.
    Confira preços estimados e o aviso de confirmação antes de continuar.
 2. Verifique se o WhatsApp abre para o número correto e se a mensagem contém
-   produtos, opções, quantidades e dados informados. Envie somente após
+   produtos, opções, quantidades, pagamento e dados informados. Envie somente após
    conferir e avise à loja que se trata de um teste.
 3. Peça à loja para confirmar disponibilidade, adicionais, mínimo, entrega e
    valor final. Não pague nem considere o pedido aceito antes da resposta.
@@ -45,12 +46,16 @@ identificar e cancelar cada teste. Não informe dados reais de terceiros.
    confira que a mensagem vai para a loja correta. Nenhum item deve migrar
    entre os carrinhos das lojas.
 5. Teste também busca sem resultados, remoção de itens, formulário incompleto,
-   opção obrigatória sem preenchimento e troca de loja. Refaça os testes nos
+   opção obrigatória sem preenchimento no carrinho e troca de loja. Refaça os testes nos
    tamanhos de tela e navegadores usados pelos clientes.
 
 O subtotal exibido é apenas uma estimativa dos preços conhecidos; adicionais,
 itens sem preço e entrega não são calculados. O atendimento da loja é
 responsável pela conferência e pela confirmação final.
+
+As opções de pagamento são preferências enviadas à loja, não uma cobrança. Pix,
+Google Pay, Nubank e cartão online aparecem no checkout oficial; sua
+disponibilidade para pedidos pelo WhatsApp deve ser confirmada com a loja.
 
 ## Segurança e responsabilidade da operação
 

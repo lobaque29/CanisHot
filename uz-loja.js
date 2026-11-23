@@ -6,12 +6,10 @@
   const search = document.querySelector('#uzSearch');
   const resultsTitle = document.querySelector('#uzResultsTitle');
   const resultsCount = document.querySelector('#uzResultsCount');
-  const itemOverlay = document.querySelector('#uzItemOverlay');
   const cartOverlay = document.querySelector('#uzCartOverlay');
-  const itemForm = document.querySelector('#uzItemForm');
-  const itemNotes = document.querySelector('#uzItemNotes');
   const cartFab = document.querySelector('#uzCartFab');
   const cartContent = document.querySelector('#uzCartContent');
+  const pagamento = configurarPagamento('uz');
   const cart = [];
   const validPrice = price => price === null || (typeof price === 'string' && /^R\$\s*\d+(?:\.\d{3})*,\d{2}$/.test(price));
   if (!Array.isArray(uzMenuData) || !uzMenuData.length || uzMenuData.some(category =>
@@ -23,7 +21,6 @@
   }
   const currency = value => (value / 100).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
   const priceInCents = price => price === null ? null : Number(price.replace(/[^\d,]/g, '').replace(',', ''));
-  let selectedItem;
   let returnFocus;
   let statusTimer;
   let selectedCategory = 0;
@@ -97,16 +94,9 @@
       add.textContent = 'Adicionar ao pedido';
       add.setAttribute('aria-label', `Adicionar ${item.name} ao pedido`);
       add.addEventListener('click', () => {
-        selectedItem = item;
-        itemForm.reset();
-        itemNotes.setCustomValidity('');
-        document.querySelector('#uzItemTitle').textContent = item.name;
-        document.querySelector('#uzItemPrice').textContent = item.price ? `Preço base: ${item.price}` : 'Preço a confirmar com a loja.';
-        itemNotes.required = item.price === null;
-        document.querySelector('#uzItemHint').textContent = item.price === null
-          ? 'Informe sabor, tamanho ou opção desejada. O preço será confirmado pela loja.'
-          : 'Informe suas escolhas ou alterações. Opções e adicionais estão sujeitos à confirmação da loja.';
-        openOverlay(itemOverlay, itemNotes);
+        cart.push({item, notes: '', quantity: 1});
+        renderCart();
+        showStatus(item.price === null ? 'Adicionado! Informe a opção desejada no carrinho.' : 'Adicionado ao pedido! Informe opções no carrinho.');
       });
       body.append(title, description, price, add);
       card.append(body);
@@ -148,8 +138,21 @@
       const name = document.createElement('b');
       name.textContent = entry.item.name;
       const info = document.createElement('small');
-      info.textContent = `${entry.item.price ? `${entry.item.price} cada (preço base)` : 'Preço a confirmar'}${entry.notes ? `\n${entry.notes}` : ''}`;
+      info.textContent = entry.item.price ? `${entry.item.price} cada (preço base)` : 'Preço a confirmar';
       details.append(name, info);
+      const field = document.createElement('div');
+      field.className = 'field cart-item-notes';
+      const notesLabel = document.createElement('label');
+      notesLabel.htmlFor = `uz-notes-${index}`;
+      notesLabel.textContent = entry.item.price === null ? 'Sabor, tamanho ou opção (obrigatório)' : 'Sabor, opções e observações';
+      const notes = document.createElement('textarea');
+      notes.id = notesLabel.htmlFor;
+      notes.rows = 2;
+      notes.placeholder = 'Informe sabor, tamanho, adicionais ou alterações';
+      notes.value = entry.notes;
+      notes.addEventListener('input', () => { entry.notes = notes.value; });
+      field.append(notesLabel, notes);
+      details.append(field);
       const controls = document.createElement('div');
       controls.className = 'qty';
       [-1, 1].forEach(delta => {
@@ -186,32 +189,13 @@
     cartContent.append(list, subtotal, note);
   }
 
-  itemForm.addEventListener('submit', event => {
-    event.preventDefault();
-    const notes = itemNotes.value.trim();
-    if (itemNotes.required && !notes) {
-      itemNotes.setCustomValidity('Informe a opção desejada.');
-      itemNotes.reportValidity();
-      return;
-    }
-    itemNotes.setCustomValidity('');
-    const existing = cart.find(entry => entry.item === selectedItem && entry.notes === notes);
-    if (existing) existing.quantity++;
-    else cart.push({item: selectedItem, notes, quantity: 1});
-    renderCart();
-    closeOverlay(itemOverlay);
-    showStatus('Item adicionado ao pedido.');
-  });
-  itemNotes.addEventListener('input', () => itemNotes.setCustomValidity(''));
   cartFab.addEventListener('click', () => openOverlay(cartOverlay, cartOverlay.querySelector('.close')));
   document.querySelectorAll('[data-uz-close]').forEach(button => button.addEventListener('click', () => closeOverlay(document.getElementById(button.dataset.uzClose))));
-  [itemOverlay, cartOverlay].forEach(overlay => overlay.addEventListener('click', event => {
-    if (event.target === overlay) closeOverlay(overlay);
-  }));
+  cartOverlay.addEventListener('click', event => {
+    if (event.target === cartOverlay) closeOverlay(cartOverlay);
+  });
   document.addEventListener('keydown', event => {
-    if (event.key !== 'Escape') return;
-    const overlay = [itemOverlay, cartOverlay].find(element => element.classList.contains('open'));
-    if (overlay) closeOverlay(overlay);
+    if (event.key === 'Escape' && cartOverlay.classList.contains('open')) closeOverlay(cartOverlay);
   });
   document.querySelector('#uzWhatsapp').addEventListener('click', () => {
     const help = document.querySelector('#uzOrderHelp');
@@ -225,19 +209,25 @@
       fail('Adicione um item ao pedido primeiro.');
       return;
     }
+    const missingOption = cart.findIndex(entry => entry.item.price === null && !entry.notes.trim());
+    if (missingOption !== -1) {
+      fail(`Informe sabor, tamanho ou opção para ${cart[missingOption].item.name}.`, document.querySelector(`#uz-notes-${missingOption}`));
+      return;
+    }
     const nameField = document.querySelector('#uzCustomer');
     const addressField = document.querySelector('#uzAddress');
     const confirmation = document.querySelector('#uzConfirm');
     if (!nameField.value.trim()) { fail('Informe seu nome para continuar.', nameField); return; }
     if (!addressField.value.trim()) { fail('Informe o endereço completo ou retirada.', addressField); return; }
+    if (!pagamento.validar(fail)) return;
     if (!confirmation.checked) { fail('Confirme que os valores e a disponibilidade precisam ser verificados com a loja.', confirmation); return; }
-    const items = cart.map(entry => `• ${entry.quantity}x ${entry.item.name} — ${entry.item.price ? `${entry.item.price} cada (preço base)` : 'preço a confirmar'}${entry.notes ? `\n  Opções: ${entry.notes}` : ''}`);
+    const items = cart.map(entry => `• ${entry.quantity}x ${entry.item.name} — ${entry.item.price ? `${entry.item.price} cada (preço base)` : 'preço a confirmar'}${entry.notes.trim() ? `\n  Opções: ${entry.notes.trim()}` : ''}`);
     const knownTotal = cart.reduce((sum, entry) => sum + (priceInCents(entry.item.price) || 0) * entry.quantity, 0);
     const name = nameField.value.trim();
     const address = addressField.value.trim();
     const notes = document.querySelector('#uzOrderNotes').value.trim();
     const subtotal = cart.some(entry => entry.item.price !== null) ? currency(knownTotal) : 'a confirmar';
-    const message = `Olá, Uz Dog's & Burg! Gostaria de fazer um pedido:\n\n${items.join('\n')}\n\nSubtotal estimado dos preços conhecidos, consultados em 23/11/2026: ${subtotal}\nNome: ${name}\nEntrega ou retirada: ${address}${notes ? `\nObservações: ${notes}` : ''}\n\nPor favor, confirme preços, disponibilidade, opções, adicionais, pedido mínimo, entrega e valor total antes do pagamento.`;
+    const message = `Olá, Uz Dog's & Burg! Gostaria de fazer um pedido:\n\n${items.join('\n')}\n\nSubtotal estimado dos preços conhecidos, consultados em 23/11/2026: ${subtotal}\nNome: ${name}\nEntrega ou retirada: ${address}\nPagamento desejado: ${pagamento.descricao()}${notes ? `\nObservações: ${notes}` : ''}\n\nPor favor, confirme preços, disponibilidade, opções, adicionais, pedido mínimo, entrega e valor total antes do pagamento.`;
     window.open(`https://wa.me/5531983055079?text=${encodeURIComponent(message)}`, '_blank', 'noopener');
   });
 })();

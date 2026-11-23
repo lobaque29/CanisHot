@@ -15,6 +15,9 @@
 .canis-official-link { display: inline-block; margin: 5px 0 18px; color: #ffe500; font-size: 12px; font-weight: 700; }
 .canis-item-add { display: flex; width: 100%; }
 #cartContent .cart-row { gap: 10px; align-items: flex-start; }
+#cartContent .cart-row > div:first-child, #uzCartContent .cart-row > div:first-child { flex: 1; min-width: 0; }
+.cart-item-notes textarea { width: 100%; resize: vertical; }
+.cart-item-notes .canis-official-link { margin: 4px 0; }
 #cartContent .cart-row small { white-space: pre-wrap; overflow-wrap: anywhere; }
 #cartContent .qty button { min-width: 32px; height: 32px; }
 @media(max-width:850px){ #canisProducts { grid-template-columns: repeat(2,minmax(0,1fr)); } }
@@ -23,3 +26,9 @@
 .order-confirm input { flex: 0 0 auto; width: 18px; height: 18px; margin: 0; accent-color: #b43e2a; }
 .order-help { margin: 12px 0 0; color: #ffdd71; font-size: 12px; line-height: 1.5; }
 .uz-modal .order-help { color: #8d291b; }
+.payment-field select { width: 100%; min-height: 46px; padding: 11px; border: 1px solid #39372d; border-radius: 10px; background: #111; color: #fff; font: 12px 'DM Sans', sans-serif; }
+.payment-field select:focus-visible { outline: 2px solid #ffe500; outline-offset: 2px; }
+.payment-field small { color: #ded7c2; font-size: 11px; line-height: 1.5; }
+.uz-modal .payment-field select { background: #fff; color: #28231e; border-color: #cfc0b0; font-size: 14px; }
+.uz-modal .payment-field select:focus-visible { outline-color: #a63b28; }
+.uz-modal .payment-field small { color: #70665c; }

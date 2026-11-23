@@ -3,11 +3,9 @@
   const categories = document.querySelector('#canisCategories');
   const grid = document.querySelector('#canisProducts');
   const search = document.querySelector('#canisSearch');
-  const itemOverlay = document.querySelector('#canisItemOverlay');
-  const itemForm = document.querySelector('#canisItemForm');
-  const notesInput = document.querySelector('#canisItemNotes');
   const cartOverlay = document.querySelector('#overlay');
   const cartContent = document.querySelector('#cartContent');
+  const pagamento = configurarPagamento('canis');
   const cart = [];
   const validPrice = price => typeof price === 'string' && /^R\$\s*\d+(?:\.\d{3})*,\d{2}$/.test(price);
   if (!Array.isArray(canisMenuData) || !canisMenuData.length || canisMenuData.some(category =>
@@ -18,7 +16,6 @@
     return;
   }
   let selectedCategory = 0;
-  let selectedItem;
   let returnFocus;
   let toastTimer;
   const normalize = value => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
@@ -93,12 +90,9 @@
       add.textContent = '+';
       add.setAttribute('aria-label', `Adicionar ${item.name} ao pedido`);
       add.addEventListener('click', () => {
-        selectedItem = item;
-        itemForm.reset();
-        document.querySelector('#canisItemTitle').textContent = item.name;
-        document.querySelector('#canisItemPrice').textContent = `Preço consultado: ${item.price}`;
-        document.querySelector('#canisOfficialCategory').href = category.url;
-        open(itemOverlay, notesInput);
+        cart.push({item, category, notes: '', quantity: 1});
+        renderCart();
+        toast('Adicionado ao pedido! Informe opções no carrinho.');
       });
       footer.append(price, add);
       body.append(title, description, footer);
@@ -141,8 +135,27 @@
       const name = document.createElement('b');
       name.textContent = entry.item.name;
       const info = document.createElement('small');
-      info.textContent = `${entry.item.price} cada${entry.notes ? `\n${entry.notes}` : ''}`;
+      info.textContent = `${entry.item.price} cada`;
       details.append(name, info);
+      const field = document.createElement('div');
+      field.className = 'field cart-item-notes';
+      const notesLabel = document.createElement('label');
+      notesLabel.htmlFor = `canis-notes-${index}`;
+      notesLabel.textContent = 'Sabor, opções e observações';
+      const notes = document.createElement('textarea');
+      notes.id = notesLabel.htmlFor;
+      notes.rows = 2;
+      notes.placeholder = 'Informe sabores, adicionais ou alterações';
+      notes.value = entry.notes;
+      notes.addEventListener('input', () => { entry.notes = notes.value; });
+      const official = document.createElement('a');
+      official.className = 'canis-official-link';
+      official.href = entry.category.url;
+      official.target = '_blank';
+      official.rel = 'noopener';
+      official.textContent = 'Consultar opções no cardápio oficial ↗';
+      field.append(notesLabel, notes, official);
+      details.append(field);
       const controls = document.createElement('div');
       controls.className = 'qty';
       [-1, 1].forEach(delta => {
@@ -174,26 +187,13 @@
     subtotal.append(label, amount);
     cartContent.append(list, subtotal);
   }
-  itemForm.addEventListener('submit', event => {
-    event.preventDefault();
-    const notes = notesInput.value.trim();
-    const existing = cart.find(entry => entry.item === selectedItem && entry.notes === notes);
-    if (existing) existing.quantity++;
-    else cart.push({item: selectedItem, notes, quantity: 1});
-    renderCart();
-    close(itemOverlay);
-    toast('Adicionado ao pedido!');
-  });
-  document.querySelector('#canisItemClose').addEventListener('click', () => close(itemOverlay));
   document.querySelector('#cartFab').addEventListener('click', () => open(cartOverlay, document.querySelector('#close')));
   document.querySelector('#close').addEventListener('click', () => close(cartOverlay));
-  [itemOverlay, cartOverlay].forEach(overlay => overlay.addEventListener('click', event => {
-    if (event.target === overlay) close(overlay);
-  }));
+  cartOverlay.addEventListener('click', event => {
+    if (event.target === cartOverlay) close(cartOverlay);
+  });
   document.addEventListener('keydown', event => {
-    if (event.key !== 'Escape') return;
-    const overlay = [itemOverlay, cartOverlay].find(element => element.classList.contains('open'));
-    if (overlay) close(overlay);
+    if (event.key === 'Escape' && cartOverlay.classList.contains('open')) close(cartOverlay);
   });
   document.querySelector('#whatsapp').addEventListener('click', () => {
     const help = document.querySelector('#canisOrderHelp');
@@ -209,11 +209,12 @@
     const confirmation = document.querySelector('#canisConfirm');
     if (!nameField.value.trim()) { fail('Informe seu nome para continuar.', nameField); return; }
     if (!addressField.value.trim()) { fail('Informe o endereço completo ou retirada.', addressField); return; }
+    if (!pagamento.validar(fail)) return;
     if (!confirmation.checked) { fail('Confirme que os valores e a disponibilidade precisam ser verificados com a loja.', confirmation); return; }
-    const items = cart.map(entry => `• ${entry.quantity}x ${entry.item.name} — ${entry.item.price} cada${entry.notes ? `\n  Opções: ${entry.notes}` : ''}`);
+    const items = cart.map(entry => `• ${entry.quantity}x ${entry.item.name} — ${entry.item.price} cada${entry.notes.trim() ? `\n  Opções: ${entry.notes.trim()}` : ''}`);
     const name = nameField.value.trim();
     const address = addressField.value.trim();
-    const message = `Olá, Canis Hot Cabana! Gostaria de fazer um pedido:\n\n${items.join('\n')}\n\nSubtotal estimado com preços consultados em 23/11/2026: ${currency(total())}\nNome: ${name}\nEntrega ou retirada: ${address}\n\nPor favor, confirme opções, preços, disponibilidade, pedido mínimo, promoções, entrega e valor total antes do pagamento.`;
+    const message = `Olá, Canis Hot Cabana! Gostaria de fazer um pedido:\n\n${items.join('\n')}\n\nSubtotal estimado com preços consultados em 23/11/2026: ${currency(total())}\nNome: ${name}\nEntrega ou retirada: ${address}\nPagamento desejado: ${pagamento.descricao()}\n\nPor favor, confirme opções, preços, disponibilidade, pedido mínimo, promoções, entrega e valor total antes do pagamento.`;
     window.open(`https://wa.me/5531986789221?text=${encodeURIComponent(message)}`, '_blank', 'noopener');
   });
   renderCart();
