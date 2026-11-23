@@ -1,0 +1,25 @@
+.canis-search { display: grid; gap: 8px; max-width: 430px; margin-bottom: 20px; color: #ded8c9; font-size: 12px; font-weight: 700; }
+.canis-search input { width: 100%; padding: 14px; border: 1px solid #544b2a; border-radius: 12px; background: #1b1b18; color: #fff9e8; font: inherit; }
+.canis-search input:focus-visible, .canis-tabs button:focus-visible, .canis-official-link:focus-visible { outline: 3px solid #ffe500; outline-offset: 3px; }
+.canis-tabs { flex-wrap: nowrap; overflow-x: auto; padding: 3px 2px 12px; scrollbar-width: thin; }
+.canis-tabs .tab { flex: 0 0 auto; }
+.canis-results { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.canis-results h2 { margin: 0; font: 700 22px 'Space Grotesk'; }
+.canis-results span, .canis-item-note { color: #b8b3a3; font-size: 12px; line-height: 1.6; }
+#canisProducts .promo-card p { min-height: 0; white-space: pre-line; font-size: 12px; }
+#canisProducts .promo-card img { object-fit: cover; }
+#canisProducts .promo-card-footer { gap: 10px; }
+#canisProducts .promo-price { white-space: nowrap; }
+.canis-placeholder { height: 190px; display: grid; place-items: center; background: #28221a; color: #b8b3a3; font-size: 12px; }
+.canis-empty { grid-column: 1/-1; padding: 26px; border: 1px solid #39372d; border-radius: 15px; color: #b8b3a3; }
+.canis-official-link { display: inline-block; margin: 5px 0 18px; color: #ffe500; font-size: 12px; font-weight: 700; }
+.canis-item-add { display: flex; width: 100%; }
+#cartContent .cart-row { gap: 10px; align-items: flex-start; }
+#cartContent .cart-row small { white-space: pre-wrap; overflow-wrap: anywhere; }
+#cartContent .qty button { min-width: 32px; height: 32px; }
+@media(max-width:850px){ #canisProducts { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media(max-width:620px){ #canisProducts { grid-template-columns: repeat(2,minmax(0,1fr)); } .canis-placeholder { height: 145px; } }
+.order-confirm { display: flex; align-items: flex-start; gap: 10px; margin: 16px 0; font-size: 12px; line-height: 1.5; }
+.order-confirm input { flex: 0 0 auto; width: 18px; height: 18px; margin: 0; accent-color: #b43e2a; }
+.order-help { margin: 12px 0 0; color: #ffdd71; font-size: 12px; line-height: 1.5; }
+.uz-modal .order-help { color: #8d291b; }
