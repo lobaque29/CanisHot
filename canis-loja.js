@@ -148,13 +148,7 @@
       notes.placeholder = 'Informe sabores, adicionais ou alterações';
       notes.value = entry.notes;
       notes.addEventListener('input', () => { entry.notes = notes.value; });
-      const official = document.createElement('a');
-      official.className = 'canis-official-link';
-      official.href = entry.category.url;
-      official.target = '_blank';
-      official.rel = 'noopener';
-      official.textContent = 'Consultar opções no cardápio oficial ↗';
-      field.append(notesLabel, notes, official);
+      field.append(notesLabel, notes);
       details.append(field);
       const controls = document.createElement('div');
       controls.className = 'qty';
