@@ -203,10 +203,10 @@
     if (!nameField.value.trim()) { fail('Informe seu nome para continuar.', nameField); return; }
     if (!addressField.value.trim()) { fail('Informe o endereço completo ou retirada.', addressField); return; }
     if (!pagamento.validar(fail)) return;
-    const items = cart.map(entry => `• ${entry.quantity}x ${entry.item.name} — ${entry.item.price} cada${entry.notes.trim() ? `\n  Opções: ${entry.notes.trim()}` : ''}`);
+    const items = cart.map(entry => `🍔 ${entry.quantity}x ${entry.item.name} — ${entry.item.price} cada${entry.notes.trim() ? `\n   📝 Opções e observações: ${entry.notes.trim()}` : ''}`);
     const name = nameField.value.trim();
     const address = addressField.value.trim();
-    const message = `Olá, Canis Hot Cabana! Gostaria de fazer um pedido:\n\n${items.join('\n')}\n\nSubtotal estimado: ${currency(total())}\nNome: ${name}\nEntrega ou retirada: ${address}\nPagamento desejado: ${pagamento.descricao()}\n\nPor favor, confirme opções, preços, disponibilidade, pedido mínimo, promoções, entrega e valor total antes do pagamento.`;
+    const message = `🍔 *NOVO PEDIDO — CANIS HOT CABANA* 🍔\n\nOlá! Gostaria de fazer este pedido, por favor:\n\n📋 *ITENS DO PEDIDO*\n${items.join('\n')}\n\n💰 *SUBTOTAL ESTIMADO:* ${currency(total())}\n\n👤 *DADOS DO CLIENTE*\nNome: ${name}\n\n📍 *ENTREGA OU RETIRADA*\n${address}\n\n💳 *FORMA DE PAGAMENTO*\n${pagamento.descricao()}\n\n⚠️ *ATENÇÃO, POR FAVOR:*\nAntes de preparar o pedido, confirme comigo os preços, as opções, os adicionais, a disponibilidade, o pedido mínimo, as promoções, a taxa de entrega e o valor total.\n\n✅ Aguardo a confirmação da loja para considerar o pedido confirmado. Obrigado! 😊`;
     window.open(`https://wa.me/5531986789221?text=${encodeURIComponent(message)}`, '_blank', 'noopener');
   });
   renderCart();
