@@ -179,7 +179,7 @@
     const subtotal = document.createElement('div');
     subtotal.className = 'cart-total';
     const label = document.createElement('span');
-    label.textContent = 'Subtotal estimado (preços de 23/11/2026)';
+    label.textContent = 'Subtotal estimado';
     const value = document.createElement('span');
     value.textContent = cart.some(entry => entry.item.price !== null) ? currency(knownTotal) : 'A confirmar';
     subtotal.append(label, value);
@@ -225,7 +225,7 @@
     const address = addressField.value.trim();
     const notes = document.querySelector('#uzOrderNotes').value.trim();
     const subtotal = cart.some(entry => entry.item.price !== null) ? currency(knownTotal) : 'a confirmar';
-    const message = `Olá, Uz Dog's & Burg! Gostaria de fazer um pedido:\n\n${items.join('\n')}\n\nSubtotal estimado dos preços conhecidos, consultados em 23/11/2026: ${subtotal}\nNome: ${name}\nEntrega ou retirada: ${address}\nPagamento desejado: ${pagamento.descricao()}${notes ? `\nObservações: ${notes}` : ''}\n\nPor favor, confirme preços, disponibilidade, opções, adicionais, pedido mínimo, entrega e valor total antes do pagamento.`;
+    const message = `Olá, Uz Dog's & Burg! Gostaria de fazer um pedido:\n\n${items.join('\n')}\n\nSubtotal estimado dos preços conhecidos: ${subtotal}\nNome: ${name}\nEntrega ou retirada: ${address}\nPagamento desejado: ${pagamento.descricao()}${notes ? `\nObservações: ${notes}` : ''}\n\nPor favor, confirme preços, disponibilidade, opções, adicionais, pedido mínimo, entrega e valor total antes do pagamento.`;
     window.open(`https://wa.me/5531983055079?text=${encodeURIComponent(message)}`, '_blank', 'noopener');
   });
 })();

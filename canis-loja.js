@@ -175,7 +175,7 @@
     const subtotal = document.createElement('div');
     subtotal.className = 'cart-total';
     const label = document.createElement('span');
-    label.textContent = 'Subtotal estimado (preços de 23/11/2026)';
+    label.textContent = 'Subtotal estimado';
     const amount = document.createElement('span');
     amount.textContent = currency(total());
     subtotal.append(label, amount);
@@ -206,7 +206,7 @@
     const items = cart.map(entry => `• ${entry.quantity}x ${entry.item.name} — ${entry.item.price} cada${entry.notes.trim() ? `\n  Opções: ${entry.notes.trim()}` : ''}`);
     const name = nameField.value.trim();
     const address = addressField.value.trim();
-    const message = `Olá, Canis Hot Cabana! Gostaria de fazer um pedido:\n\n${items.join('\n')}\n\nSubtotal estimado com preços consultados em 23/11/2026: ${currency(total())}\nNome: ${name}\nEntrega ou retirada: ${address}\nPagamento desejado: ${pagamento.descricao()}\n\nPor favor, confirme opções, preços, disponibilidade, pedido mínimo, promoções, entrega e valor total antes do pagamento.`;
+    const message = `Olá, Canis Hot Cabana! Gostaria de fazer um pedido:\n\n${items.join('\n')}\n\nSubtotal estimado: ${currency(total())}\nNome: ${name}\nEntrega ou retirada: ${address}\nPagamento desejado: ${pagamento.descricao()}\n\nPor favor, confirme opções, preços, disponibilidade, pedido mínimo, promoções, entrega e valor total antes do pagamento.`;
     window.open(`https://wa.me/5531986789221?text=${encodeURIComponent(message)}`, '_blank', 'noopener');
   });
   renderCart();
