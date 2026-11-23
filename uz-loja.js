@@ -216,11 +216,9 @@
     }
     const nameField = document.querySelector('#uzCustomer');
     const addressField = document.querySelector('#uzAddress');
-    const confirmation = document.querySelector('#uzConfirm');
     if (!nameField.value.trim()) { fail('Informe seu nome para continuar.', nameField); return; }
     if (!addressField.value.trim()) { fail('Informe o endereço completo ou retirada.', addressField); return; }
     if (!pagamento.validar(fail)) return;
-    if (!confirmation.checked) { fail('Confirme que os valores e a disponibilidade precisam ser verificados com a loja.', confirmation); return; }
     const items = cart.map(entry => `• ${entry.quantity}x ${entry.item.name} — ${entry.item.price ? `${entry.item.price} cada (preço base)` : 'preço a confirmar'}${entry.notes.trim() ? `\n  Opções: ${entry.notes.trim()}` : ''}`);
     const knownTotal = cart.reduce((sum, entry) => sum + (priceInCents(entry.item.price) || 0) * entry.quantity, 0);
     const name = nameField.value.trim();
